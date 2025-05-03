@@ -1,5 +1,6 @@
 package com.example;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -11,10 +12,10 @@ public class FormUITest {
 
     @BeforeEach
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "/usr/bin/chromedriver"); // Update if your path is different
+        WebDriverManager.chromedriver().setup(); // Automatically handles driver setup
 
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new"); // headless mode
+        options.addArguments("--headless=new"); // Run in headless mode
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
 
