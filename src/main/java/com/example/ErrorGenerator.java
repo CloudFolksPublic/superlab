@@ -2,7 +2,11 @@ package com.example;
 
 public class ErrorGenerator {
 
-    public String causeError() {
-        return "This is an unused and untested method.";
+    public void riskyMethod() {
+        try {
+            int result = 10 / 0; // Division by zero - known bad practice
+        } catch (Exception e) {
+            // Swallowing exception without logging or handling
+        }
     }
 }
