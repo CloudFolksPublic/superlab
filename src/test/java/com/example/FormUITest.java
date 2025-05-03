@@ -23,40 +23,40 @@ public class FormUITest {
 
     @Test
     public void testMainFormSubmitButton() {
-        System.out.println("🔍 Testing submit button on the MAIN page ('/')");
-
-        driver.get("http://localhost:8081/");
-        WebElement button = driver.findElement(By.tagName("button"));
-        button.click();
-
+        String pageUrl = "http://localhost:8081/";
         try {
-            Thread.sleep(1000); // Wait for any UI response
-        } catch (InterruptedException ignored) {}
+            driver.get(pageUrl);
+            WebElement button = driver.findElement(By.tagName("button"));
+            button.click();
+            Thread.sleep(1000); // Wait for any potential UI response
 
-        String currentUrl = driver.getCurrentUrl();
-        Assertions.assertTrue(
-            currentUrl.contains("success") || currentUrl.contains("submitted"),
-            "❌ Test Failed: Submit button on **MAIN page ('/')** did not navigate or respond as expected."
-        );
+            String currentUrl = driver.getCurrentUrl();
+            Assertions.assertTrue(
+                currentUrl.contains("success") || currentUrl.contains("submitted"),
+                "❌ Submit button failed on page: '" + pageUrl + "' — Expected redirect to include 'success' or 'submitted', but got: '" + currentUrl + "'"
+            );
+        } catch (Throwable t) {
+            Assertions.fail("❌ Exception occurred on page: '" + pageUrl + "' — " + t.getMessage(), t);
+        }
     }
 
     @Test
     public void testBrokenFormSubmitButton() {
-        System.out.println("🔍 Testing submit button on the BROKEN page ('/broken')");
-
-        driver.get("http://localhost:8081/broken");
-        WebElement button = driver.findElement(By.tagName("button"));
-        button.click();
-
+        String pageUrl = "http://localhost:8081/broken";
         try {
-            Thread.sleep(1000); // Wait for any UI response
-        } catch (InterruptedException ignored) {}
+            driver.get(pageUrl);
+            WebElement button = driver.findElement(By.tagName("button"));
+            button.click();
+            Thread.sleep(1000); // Wait for any potential UI response
 
-        String currentUrl = driver.getCurrentUrl();
-        Assertions.assertFalse(
-            currentUrl.contains("success") || currentUrl.contains("submitted"),
-            "❌ Test Failed: Submit button on **BROKEN page ('/broken')** unexpectedly navigated or responded."
-        );
+            String currentUrl = driver.getCurrentUrl();
+            Assertions.assertFalse(
+                currentUrl.contains("success") || currentUrl.contains("submitted"),
+                "❌ Submit button on page: '" + pageUrl + "' unexpectedly redirected to: '" + currentUrl + "'"
+            );
+        } catch (Throwable t) {
+            Assertions.fail("❌ Exception occurred on page: '" + pageUrl + "' — " + t.getMessage(), t);
+        }
     }
 
     @AfterEach
