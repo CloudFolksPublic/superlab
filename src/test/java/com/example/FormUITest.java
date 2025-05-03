@@ -22,30 +22,40 @@ public class FormUITest {
     }
 
     @Test
-    public void testMainFormSubmitButton() throws InterruptedException {
+    public void testMainFormSubmitButton() {
+        System.out.println("🔍 Testing submit button on the MAIN page ('/')");
+
         driver.get("http://localhost:8081/");
         WebElement button = driver.findElement(By.tagName("button"));
         button.click();
-        Thread.sleep(1000); // Wait for any potential UI response
+
+        try {
+            Thread.sleep(1000); // Wait for any UI response
+        } catch (InterruptedException ignored) {}
 
         String currentUrl = driver.getCurrentUrl();
         Assertions.assertTrue(
             currentUrl.contains("success") || currentUrl.contains("submitted"),
-            "❌ Test Failed: Submit button on the **main page** (FormUITest.java) did not perform expected action."
+            "❌ Test Failed: Submit button on **MAIN page ('/')** did not navigate or respond as expected."
         );
     }
 
     @Test
-    public void testBrokenFormSubmitButton() throws InterruptedException {
+    public void testBrokenFormSubmitButton() {
+        System.out.println("🔍 Testing submit button on the BROKEN page ('/broken')");
+
         driver.get("http://localhost:8081/broken");
         WebElement button = driver.findElement(By.tagName("button"));
         button.click();
-        Thread.sleep(1000); // Wait for any potential UI response
+
+        try {
+            Thread.sleep(1000); // Wait for any UI response
+        } catch (InterruptedException ignored) {}
 
         String currentUrl = driver.getCurrentUrl();
         Assertions.assertFalse(
             currentUrl.contains("success") || currentUrl.contains("submitted"),
-            "❌ Test Failed: Clicked the submit button on the **'/broken' page** (FormUITest.java), but it unexpectedly redirected."
+            "❌ Test Failed: Submit button on **BROKEN page ('/broken')** unexpectedly navigated or responded."
         );
     }
 
