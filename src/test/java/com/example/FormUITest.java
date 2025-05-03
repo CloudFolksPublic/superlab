@@ -4,58 +4,71 @@ import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.*;
+
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FormUITest {
 
     private WebDriver driver;
+    private WebDriverWait wait;
 
     @BeforeEach
     public void setUp() {
         io.github.bonigarcia.wdm.WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new"); // Run in headless mode
+        options.addArguments("--headless");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-gpu");
 
         driver = new ChromeDriver(options);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     @Test
-    public void testMainFormSubmitButton() {
-        String pageUrl = "http://localhost:8081/";
+    public void testFormOnMainPage() {
         try {
-            driver.get(pageUrl);
-            WebElement button = driver.findElement(By.tagName("button"));
-            button.click();
-            Thread.sleep(1000); // Wait for any potential UI response
+            driver.get("http://localhost:8081/");
 
-            String currentUrl = driver.getCurrentUrl();
-            Assertions.assertTrue(
-                currentUrl.contains("success") || currentUrl.contains("submitted"),
-                "❌ Submit button failed on page: '" + pageUrl + "' — Expected redirect to include 'success' or 'submitted', but got: '" + currentUrl + "'"
-            );
-        } catch (Throwable t) {
-            Assertions.fail("❌ Exception occurred on page: '" + pageUrl + "' — " + t.getMessage(), t);
+            WebElement nameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name")));
+            WebElement emailField = driver.findElement(By.id("email"));
+            WebElement submitButton = driver.findElement(By.xpath("//button[@type='submit']"));
+
+            nameField.sendKeys("Leo");
+            emailField.sendKeys("leo@example.com");
+            submitButton.click();
+
+            WebElement message = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("h1")));
+            assertTrue(message.getText().contains("Thank You"), "✅ Main page form submission success message should appear.");
+
+        } catch (Exception e) {
+            fail("❌ Test Failed on MAIN page ('/'): " + e.getMessage());
         }
     }
 
     @Test
-    public void testBrokenFormSubmitButton() {
-        String pageUrl = "http://localhost:8081/broken";
+    public void testFormOnBrokenPage() {
         try {
-            driver.get(pageUrl);
-            WebElement button = driver.findElement(By.tagName("button"));
-            button.click();
-            Thread.sleep(1000); // Wait for any potential UI response
+            driver.get("http://localhost:8081/broken");
 
-            String currentUrl = driver.getCurrentUrl();
-            Assertions.assertFalse(
-                currentUrl.contains("success") || currentUrl.contains("submitted"),
-                "❌ Submit button on page: '" + pageUrl + "' unexpectedly redirected to: '" + currentUrl + "'"
-            );
-        } catch (Throwable t) {
-            Assertions.fail("❌ Exception occurred on page: '" + pageUrl + "' — " + t.getMessage(), t);
+            WebElement nameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name")));
+            WebElement emailField = driver.findElement(By.id("email"));
+            WebElement submitButton = driver.findElement(By.xpath("//button[@type='submit']"));
+
+            nameField.sendKeys("Ray");
+            emailField.sendKeys("ray@example.com");
+            submitButton.click();
+
+            WebElement message = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("h1")));
+            assertTrue(message.getText().toLowerCase().contains("error") || message.getText().toLowerCase().contains("invalid"),
+                    "⚠️ Expected error/invalid message on '/broken' page.");
+
+        } catch (Exception e) {
+            fail("❌ Test Failed on BROKEN page ('/broken'): " + e.getMessage());
         }
     }
 
