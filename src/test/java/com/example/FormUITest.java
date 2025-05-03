@@ -17,6 +17,7 @@ public class FormUITest {
 
     @BeforeEach
     public void setUp() {
+        // Auto-setup ChromeDriver
         io.github.bonigarcia.wdm.WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
@@ -31,9 +32,9 @@ public class FormUITest {
 
     @Test
     public void testFormOnMainPage() {
-        try {
-            driver.get("http://localhost:8081/");
+        driver.get("http://localhost:8081/");
 
+        try {
             WebElement nameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name")));
             WebElement emailField = driver.findElement(By.id("email"));
             WebElement submitButton = driver.findElement(By.xpath("//button[@type='submit']"));
@@ -43,7 +44,8 @@ public class FormUITest {
             submitButton.click();
 
             WebElement message = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("h1")));
-            assertTrue(message.getText().contains("Thank You"), "✅ Main page form submission success message should appear.");
+            assertTrue(message.getText().contains("Thank You"),
+                    "✅ Main page form submission should display 'Thank You' message.");
 
         } catch (Exception e) {
             fail("❌ Test Failed on MAIN page ('/'): " + e.getMessage());
@@ -52,9 +54,9 @@ public class FormUITest {
 
     @Test
     public void testFormOnBrokenPage() {
-        try {
-            driver.get("http://localhost:8081/broken");
+        driver.get("http://localhost:8081/broken");
 
+        try {
             WebElement nameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name")));
             WebElement emailField = driver.findElement(By.id("email"));
             WebElement submitButton = driver.findElement(By.xpath("//button[@type='submit']"));
@@ -65,7 +67,7 @@ public class FormUITest {
 
             WebElement message = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("h1")));
             assertTrue(message.getText().toLowerCase().contains("error") || message.getText().toLowerCase().contains("invalid"),
-                    "⚠️ Expected error/invalid message on '/broken' page.");
+                    "⚠️ Broken page should show an error or invalid message.");
 
         } catch (Exception e) {
             fail("❌ Test Failed on BROKEN page ('/broken'): " + e.getMessage());
