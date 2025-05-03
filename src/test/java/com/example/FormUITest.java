@@ -11,11 +11,11 @@ public class FormUITest {
 
     @BeforeEach
     public void setUp() {
-        // Auto-download ChromeDriver using WebDriverManager
+        // Automatically setup ChromeDriver
         io.github.bonigarcia.wdm.WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new"); // run without GUI
+        options.addArguments("--headless=new");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
 
@@ -24,24 +24,16 @@ public class FormUITest {
 
     @Test
     public void testMainFormSubmitButton() {
-        try {
-            driver.get("http://localhost:8081/");
-            WebElement button = driver.findElement(By.tagName("button"));
-            Assertions.assertTrue(button.isEnabled(), "Main page submit button should be enabled");
-        } catch (Throwable t) {
-            System.err.println("❌ testMainFormSubmitButton failed: " + t.getMessage());
-        }
+        driver.get("http://localhost:8081/");
+        WebElement button = driver.findElement(By.tagName("button"));
+        Assertions.assertTrue(button.isEnabled(), "Main page submit button should be enabled");
     }
 
     @Test
     public void testBrokenFormSubmitButton() {
-        try {
-            driver.get("http://localhost:8081/broken");
-            WebElement button = driver.findElement(By.tagName("button"));
-            Assertions.assertFalse(button.isEnabled(), "Broken page submit button should be disabled");
-        } catch (Throwable t) {
-            System.err.println("❌ testBrokenFormSubmitButton failed: " + t.getMessage());
-        }
+        driver.get("http://localhost:8081/broken");
+        WebElement button = driver.findElement(By.tagName("button"));
+        Assertions.assertFalse(button.isEnabled(), "Broken page submit button should be disabled");
     }
 
     @AfterEach
