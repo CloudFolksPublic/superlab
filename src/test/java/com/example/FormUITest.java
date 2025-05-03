@@ -22,35 +22,31 @@ public class FormUITest {
     }
 
     @Test
-    public void testMainFormSubmitButton() {
-        try {
-            driver.get("http://localhost:8081/");
-            WebElement button = driver.findElement(By.tagName("button"));
-            button.click();
-            Thread.sleep(1000); // Wait for any potential UI response
+    public void testMainFormSubmitButton() throws InterruptedException {
+        driver.get("http://localhost:8081/");
+        WebElement button = driver.findElement(By.tagName("button"));
+        button.click();
+        Thread.sleep(1000); // Wait for any potential UI response
 
-            String currentUrl = driver.getCurrentUrl();
-            Assertions.assertTrue(currentUrl.contains("success") || currentUrl.contains("submitted"),
-                "❌ Test Failed: Submit button on the **main page** did not perform expected action.");
-        } catch (Throwable t) {
-            System.err.println("❌ testMainFormSubmitButton failed: " + t.getMessage());
-        }
+        String currentUrl = driver.getCurrentUrl();
+        Assertions.assertTrue(
+            currentUrl.contains("success") || currentUrl.contains("submitted"),
+            "❌ Test Failed: Submit button on the **main page** (FormUITest.java) did not perform expected action."
+        );
     }
 
     @Test
-    public void testBrokenFormSubmitButton() {
-        try {
-            driver.get("http://localhost:8081/broken");
-            WebElement button = driver.findElement(By.tagName("button"));
-            button.click();
-            Thread.sleep(1000); // Wait for any potential UI response
+    public void testBrokenFormSubmitButton() throws InterruptedException {
+        driver.get("http://localhost:8081/broken");
+        WebElement button = driver.findElement(By.tagName("button"));
+        button.click();
+        Thread.sleep(1000); // Wait for any potential UI response
 
-            String currentUrl = driver.getCurrentUrl();
-            Assertions.assertFalse(currentUrl.contains("success") || currentUrl.contains("submitted"),
-                "❌ Test Failed: Clicked the submit button on **'/broken' page**, but it did not navigate or respond as expected.");
-        } catch (Throwable t) {
-            System.err.println("❌ testBrokenFormSubmitButton failed: " + t.getMessage());
-        }
+        String currentUrl = driver.getCurrentUrl();
+        Assertions.assertFalse(
+            currentUrl.contains("success") || currentUrl.contains("submitted"),
+            "❌ Test Failed: Clicked the submit button on the **'/broken' page** (FormUITest.java), but it unexpectedly redirected."
+        );
     }
 
     @AfterEach
