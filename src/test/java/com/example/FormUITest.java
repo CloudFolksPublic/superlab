@@ -11,7 +11,6 @@ public class FormUITest {
 
     @BeforeEach
     public void setUp() {
-        // Automatically setup ChromeDriver
         io.github.bonigarcia.wdm.WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();
@@ -26,14 +25,28 @@ public class FormUITest {
     public void testMainFormSubmitButton() {
         driver.get("http://localhost:8081/");
         WebElement button = driver.findElement(By.tagName("button"));
-        Assertions.assertTrue(button.isEnabled(), "Main page submit button should be enabled");
+        button.click();
+        
+        // Check that navigation or action occurred
+        String currentUrl = driver.getCurrentUrl();
+        Assertions.assertTrue(currentUrl.contains("success") || currentUrl.contains("submitted"),
+            "❌ Test Failed: Submit button on the main page did not perform expected action.");
     }
 
     @Test
     public void testBrokenFormSubmitButton() {
         driver.get("http://localhost:8081/broken");
         WebElement button = driver.findElement(By.tagName("button"));
-        Assertions.assertFalse(button.isEnabled(), "Broken page submit button should be disabled");
+        button.click();
+        try {
+            Thread.sleep(1000); // Wait briefly to see if anything changes
+        } catch (InterruptedException e) {
+            // Ignored for brevity
+        }
+
+        String currentUrl = driver.getCurrentUrl();
+        Assertions.assertFalse(currentUrl.contains("success") || currentUrl.contains("submitted"),
+            "❌ Test Failed: Clicked the submit button on '/broken' page, but it unexpectedly worked (navigated). It should be broken.");
     }
 
     @AfterEach
