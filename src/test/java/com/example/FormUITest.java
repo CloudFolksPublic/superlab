@@ -51,7 +51,31 @@ public class FormUITest {
             fail("❌ Test Failed on MAIN page ('/'): " + e.getMessage());
         }
     }
-    
+
+    // 🔽 TO REMOVE BROKEN PAGE TEST, DELETE LINES FROM HERE 🔽
+    @Test
+    public void testFormOnBrokenPage() {
+        driver.get("http://localhost:8081/broken");
+
+        try {
+            WebElement nameField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name")));
+            WebElement emailField = driver.findElement(By.id("email"));
+            WebElement submitButton = driver.findElement(By.xpath("//button[@type='submit']"));
+
+            nameField.sendKeys("Ray");
+            emailField.sendKeys("ray@example.com");
+            submitButton.click();
+
+            WebElement message = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("h1")));
+            assertTrue(message.getText().toLowerCase().contains("error") || message.getText().toLowerCase().contains("invalid"),
+                    "⚠️ Broken page should show an error or invalid message.");
+
+        } catch (Exception e) {
+            fail("❌ Test Failed on BROKEN page ('/broken'): " + e.getMessage());
+        }
+    }
+    // 🔼 TO REMOVE BROKEN PAGE TEST, DELETE LINES UNTIL HERE 🔼
+
     @AfterEach
     public void tearDown() {
         if (driver != null) {
